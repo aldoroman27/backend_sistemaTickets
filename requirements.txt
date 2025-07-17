@@ -4,3 +4,4 @@ mysql-connector-python
 flask-bcrypt
 pymongo
 python-dotenv
+gunicorn
