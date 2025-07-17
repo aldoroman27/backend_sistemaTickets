@@ -1,7 +1,6 @@
 flask
 flask-cors
 mysql-connector-python
-flask-bcryp
-hashlib
+flask-bcrypt
 pymongo
 python-dotenv
