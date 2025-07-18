@@ -20,7 +20,7 @@ db = client['pruebas_mido'] #Nombre de la base de datos
 coleccion_usuarios = db['usuarios'] #Colección de datos que vamos a obtener
 
 #Definimos nuestra ruta para el proceso del login usando el método POST
-@auth_bp.route('/login', methods=['POST','OPTIONS'])
+@auth_bp.route('/login', methods=['POST', 'OPTIONS'])
 def login():#Definimos nuestra función del login
     if request.method == 'OPTIONS':
         return '',200

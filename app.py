@@ -12,7 +12,12 @@ from routes.registro_mongo import registromongo_bp
 
 app = Flask(__name__)
 #Definimos las rutas a las que se va a comunicar nuestro backend, podemos incluir la local para pruebas locales y producción.
-CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
+CORS(app, supports_credentials=True, origins=[
+    "http://localhost:5173",
+    "http://localhost:5000",  # si haces pruebas desde ahí
+    "https://backend-sistematickets.onrender.com",  # opcional, por si haces peticiones internas
+    "https://<tu-frontend-en-producción>.web.app"  # remplázalo con tu dominio real
+])
 
 app.config['SECRET_KEY'] = 'mido_clave123#'#No es una secret key, no le demos importancia de momento
 
