@@ -22,8 +22,6 @@ coleccion_usuarios = db['usuarios'] #Colección de datos que vamos a obtener
 #Definimos nuestra ruta para el proceso del login usando el método POST
 @auth_bp.route('/login', methods=['POST', 'OPTIONS'])
 def login():#Definimos nuestra función del login
-    if request.method == 'OPTIONS':
-        return '',200
     try:
         data = request.json #Hacemos un request para obtener los datos que se introdujeron
         id_usuario = data.get('id') #Asignamos a una variable el valor del id del usuairo
