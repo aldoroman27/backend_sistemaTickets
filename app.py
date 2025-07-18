@@ -11,7 +11,8 @@ from routes.login_mongo import auth_bp
 from routes.registro_mongo import registromongo_bp
 
 app = Flask(__name__)
-CORS(app)
+#Definimos las rutas a las que se va a comunicar nuestro backend, podemos incluir la local para pruebas locales y producción.
+CORS(app, resources={"origins":"http://localhost:5000"})
 
 app.config['SECRET_KEY'] = 'mido_clave123#'#No es una secret key, no le demos importancia de momento
 
