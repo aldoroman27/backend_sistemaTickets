@@ -20,7 +20,7 @@ db = client['pruebas_mido'] #Nombre de la base de datos
 coleccion_usuarios = db['usuarios'] #Colección de datos que vamos a obtener
 
 #Definimos nuestra ruta para el proceso del login usando el método POST
-@auth_bp.route('/login', methods=['POST','OPTOINS'])
+@auth_bp.route('/login', methods=['POST','OPTIONS'])
 def login():#Definimos nuestra función del login
     if request.method == 'OPTIONS':
         return '',200
@@ -33,7 +33,7 @@ def login():#Definimos nuestra función del login
             #Retornamos el mensaje de error indicando que hace falta que se ingresen los datos y que se intente de nuevo
             return jsonify({'message':'Error, datos faltantes, intente de nuevo'})
         #En caso que se encuentren entonces hacemos una búsqueda dentro de nuestra base de datos.
-        usuario = coleccion_usuarios.find_one({"id":id_usuario})
+        usuario = coleccion_usuarios.find_one({"idEmpleado":id_usuario})
         #Imprimimos en consola el usuario por id
         print("Doc de mongo: ",usuario)
         #Hacemos la verificación del usuario y la contraseña sin su hash y hacemos la configuración
@@ -47,7 +47,7 @@ def login():#Definimos nuestra función del login
             #Retornamos entonces el valor en formato json
             return jsonify({
                 'token':token,#Retornamos entonces el valor de nuestro token
-                'nombre':usuario.get('usuario') or usuario.get('nombre'),#Retornamos el nombre de nuestro usuario
+                'nombre':usuario.get('nombreCompleto') or usuario.get('nombre'),#Retornamos el nombre de nuestro usuario
                 'admin':usuario['admin'],#El valor de admin True o False
                 'id':usuario['id']# Y finalmente su id
             }),200#Retornamos con el código del servidor que es 200 = ok
