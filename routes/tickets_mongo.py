@@ -247,7 +247,7 @@ def modificarTickets(id_ticket):#Definimos entonces nuestra función para modifi
         return jsonify({'message':str(e)}),500
     
 #Definimos una nueva ruta para que el usuario vea el status de sus tickets
-@tickets_mongo_bp.route('/mis_tickets/<id>',methods=['GET'])
+@tickets_mongo_bp.route('/mis_tickets/<int:id_ticket>',methods=['GET'])
 def misTickets(id):
     try:
         tickets_cursor = coleccion_tickets.find({"idEmpleado":id})
