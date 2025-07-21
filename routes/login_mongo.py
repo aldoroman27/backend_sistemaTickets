@@ -42,10 +42,18 @@ def login():#Definimos nuestra función del login
                 'exp': datetime.now(timezone.utc) + timedelta(hours=2)#Tiempo de vida de nuestro usuario.
             },SECRET_KEY, algorithm='HS256')#Usamos una SECRET_KEY
 
+            if isinstance(token, bytes):
+                token = token.decode('utf-8')
+            else:
+                token
+
+            print("TOKEN: ",token)
+            print("USUARIO: ", usuario)
+
             #Retornamos entonces el valor en formato json
             return jsonify({
                 'token':token,#Retornamos entonces el valor de nuestro token
-                'nombre':usuario.get('nombreCompleto') or usuario.get('nombre'),#Retornamos el nombre de nuestro usuario
+                'nombre':usuario.get('nombre'),#Retornamos el nombre de nuestro usuario
                 'admin':usuario['admin'],#El valor de admin True o False
                 'id':usuario['id']# Y finalmente su id
             }),200#Retornamos con el código del servidor que es 200 = ok
