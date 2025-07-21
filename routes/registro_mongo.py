@@ -6,12 +6,14 @@ import os
 
 bcrypt = Bcrypt()
 registromongo_bp = Blueprint('registro_mongo',__name__)
-client = MongoClient(os.getenv("MONGO_URI"))
+
+
+client = MongoClient(os.getenv("MONGO_URI"))#Usamos nuestra variable de entorno.
 db = client['pruebas_mido'] #Nombre de la base de datos
 coleccion_usuarios = db['usuarios'] #Colección de datos que vamos a obtener
 
 #Creamos nuestra ruta para registraer usuarios usando el método POST
-@registromongo_bp.route('/registrar_usuario', methods=['POST'])
+@registromongo_bp.route('/registrar_usuario', methods=['POST','OPTIONS'])
 def registrarUsuario():#Definimos nuestra función
     try:
         data = request.get_json()#Obtenemos la información que necesitamos en formato json
@@ -41,7 +43,7 @@ def registrarUsuario():#Definimos nuestra función
         password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
         #Si ninguna de estas caracteristicas se cumplen, entonces le asignamos los valores a nuestra variable que va a almacenar la información
         nuevo_usuario = {
-            'nombreCompleto':nombre,
+            'nombre':nombre,
             'idEmpleado':idEmpleado,
             'password_hash':password_hash,
             'admin':admin

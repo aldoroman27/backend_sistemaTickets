@@ -53,7 +53,7 @@ def login():#Definimos nuestra función del login
                 'token':token,#Retornamos entonces el valor de nuestro token
                 'nombre':usuario.get('nombre'),#Retornamos el nombre de nuestro usuario
                 'admin':usuario['admin'],#El valor de admin True o False
-                'id':usuario['id']# Y finalmente su id
+                'idEmpleado':usuario['idEmpleado']# Y finalmente su id
             }),200#Retornamos con el código del servidor que es 200 = ok
         else:#En caso de que no sean las credenciales, entonces
             #Retornamos el mensaje del error y el código 404 de que no se encontró.
