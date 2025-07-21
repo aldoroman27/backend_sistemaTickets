@@ -248,9 +248,9 @@ def modificarTickets(id_ticket):#Definimos entonces nuestra función para modifi
     
 #Definimos una nueva ruta para que el usuario vea el status de sus tickets
 @tickets_mongo_bp.route('/mis_tickets/<int:id_ticket>',methods=['GET'])
-def misTickets(id):
+def misTickets(id_ticket):
     try:
-        tickets_cursor = coleccion_tickets.find({"idEmpleado":id})
+        tickets_cursor = coleccion_tickets.find({"idEmpleado":id_ticket})
         tickets = []#Creamos una lista de tickets para almacenarlos y al final retornarlos en formato JSON
 
         #Hacemos un ciclo for para recorrer cada dato que nos retorne nuestro cursor
