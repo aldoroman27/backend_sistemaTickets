@@ -37,7 +37,7 @@ def login():#Definimos nuestra función del login
         #Hacemos la verificación del usuario y la contraseña sin su hash y hacemos la configuración
         if usuario and bcrypt.check_password_hash(usuario['password_hash'], password):
             token = jwt.encode({#Retornamos un token para proteger las rutas del backend.
-                'id':usuario['id'],#Recuperamos entonces la información del usuario id
+                'idEmpleado':usuario['id'],#Recuperamos entonces la información del usuario id
                 'admin':usuario['admin'],#Tipo de usuario
                 'exp': datetime.now(timezone.utc) + timedelta(hours=2)#Tiempo de vida de nuestro usuario.
             },SECRET_KEY, algorithm='HS256')#Usamos una SECRET_KEY
