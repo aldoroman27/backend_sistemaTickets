@@ -19,7 +19,7 @@ def registrarUsuario():#Definimos nuestra función
         data = request.get_json()#Obtenemos la información que necesitamos en formato json
         print("DATA RECIBIDA: ", data)#Esto es para testeo y ver que la información que nos llega es la correcta
         idEmpleado = data.get('idEmpleado')#Hacemos set de la información que recuperamos
-        nombre = data.get('nombreCompleto')#Hacemos el set del nombre completo de nuestro colaborador
+        nombre = data.get('nombre')#Hacemos el set del nombre completo de nuestro colaborador
         admin = data.get('admin')#Hacemos el set de si es admin o no
         print("Admin: ", admin)#Esto es para testeo y verificar si es admin o no admin
         password = data.get('password')#Obtenemos la contraseña
@@ -28,11 +28,14 @@ def registrarUsuario():#Definimos nuestra función
             #Mostramos error e indicamos que se introduzcan todos los campos necesarios
             return jsonify({'message':'Error, introduzca todos los campos que se solicitan'}),400
         
+        if admin not in[True, False]:
+            return jsonify({'message':'Error, el campo debe ser True o False'}),400
+
         #Si el id del usuario o el nombre del usuario ya se encuentran en nuestra base de datos, entonces mostraremos error
         usuario_existente = coleccion_usuarios.find_one({
             '$or':[
                 {'idEmpleado': idEmpleado},
-                {'nombreCOmpleto':nombre}
+                {'nombre':nombre}
             ]
         })
         #Si alguna de las caracteristicas se cumplen entonces
