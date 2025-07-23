@@ -3,7 +3,7 @@ from marshmallow import Schema, fields, validate
 
 #Definimos una clase de tipo TicketSchema, que validará cada uno de los campos que le vamos a pasar como parametro
 class TicketSchema(Schema):
-    idEmpleado = fields.String(dump_only=True)
+    idEmpleado = fields.String(required=True)
     nombreCompleto = fields.String(required=True)
     correoElectronico = fields.Email(required=True)
     departamento = fields.String(required=True)
