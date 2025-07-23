@@ -4,7 +4,7 @@ from flask_cors import CORS #CORS para facilitar las peticiones del front con el
 from pymongo import MongoClient# pymongo para la conexión con la base de datos en mongo
 from marshmallow import ValidationError #Importamos ValidationError para mostrar excepciones.
 import re #No recuerdo que hacía re
-from datetime import datetime #Importamos datetime para obtener la fecha actual.
+from datetime import datetime, date #Importamos datetime para obtener la fecha actual.
 import os #Importamos os para poder obtener las claves de nuestro .env
 #Importamos nuestro schema para validar los tickets
 from schemas.validarticketSchema import TicketSchema
@@ -44,7 +44,7 @@ def crear_ticket():
         ticket_validado = ticket_schema.load(data)
         print("Ticket validado: ", ticket_validado)
 
-        if isinstance(ticket_validado['fecha'], datetime.date):
+        if isinstance(ticket_validado['fecha'], date):
             ticket_validado['fecha'] = datetime.combine(ticket_validado['fecha'], datetime.min.time())
 
         nuevo_id = get_next_ticket_id()
