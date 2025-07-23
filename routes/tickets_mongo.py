@@ -102,7 +102,7 @@ def obtener_tickets():
         print(f"Total de tickets encontrados: {len(tickets)}")#Mostramos todos los tickets que tenemos en nuestra lista
         return jsonify(tickets),200 #Retornamos los valores con éxito si es que encontramos tickets existentes
     except Exception as e:#En caso de fallar entonces:
-        print("Erro al obtner los tickets: ",e)#Mostramos error al obtener los tickets e imprimimos el error
+        print("Erro al obtener los tickets: ",e)#Mostramos error al obtener los tickets e imprimimos el error
         return jsonify({'message':str(e)})#Mostramos el error
     
 #Esta ruta será la encarga de buscar los tickets, tomando como parametro el ID del ticket.
