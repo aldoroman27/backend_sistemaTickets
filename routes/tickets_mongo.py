@@ -69,7 +69,9 @@ def crear_ticket():
 def obtener_tickets():
     try:
         #Hacemos una consulta y además un filtrado por estado para mostrar únicamente los que tienen estado pendiente
-        tickets_cursor = coleccion_tickets.find({"estado":"pendiente" or "Pendiente"})
+        tickets_cursor = coleccion_tickets.find({
+            "estado": {"$regex": "^pendiente$", "$options": "i"}  # i = ignore case
+        })
         tickets = []#Creamos una lista de tickets para almacenarlos y al final retornarlos en formato JSON
 
         #Hacemos un ciclo for para recorrer cada dato que nos retorne nuestro cursor
@@ -86,7 +88,7 @@ def obtener_tickets():
         print(f"Total de tickets encontrados: {len(tickets)}")#Mostramos todos los tickets que tenemos en nuestra lista
         return jsonify(tickets),200 #Retornamos los valores con éxito si es que encontramos tickets existentes
     except Exception as e:#En caso de fallar entonces:
-        print("Erro al obtener los tickets: ",e)#Mostramos error al obtener los tickets e imprimimos el error
+        print("Error al obtener los tickets: ",e)#Mostramos error al obtener los tickets e imprimimos el error
         return jsonify({'message':str(e)})#Mostramos el error
     
 #Esta ruta será la encarga de buscar los tickets, tomando como parametro el ID del ticket.
@@ -141,7 +143,9 @@ def eliminarTicket(id_ticket):
 def ticketsCompletados():
     try:
         #Hacemos una consulta y además un filtrado por estado para mostrar únicamente los que tienen estado completado
-        tickets_cursor = coleccion_tickets.find({"estado":"completado" or "Completado"})
+        tickets_cursor = coleccion_tickets.find({
+            "estado": {"$regex": "^completado$", "$options": "i"}  # i = ignore case
+        })
         tickets = []#Creamos una lista de tickets para almacenarlos y al final retornarlos en formato JSON
 
         #Hacemos un ciclo for para recorrer cada dato que nos retorne nuestro cursor
