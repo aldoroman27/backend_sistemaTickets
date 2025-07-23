@@ -36,7 +36,6 @@ def handle_options():
 def after_request(response):
     response.headers.add('Access-Control-Allow-Headers','Content-Type,Authorization')
     response.headers.add('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,PUT,DELETE')
-    response.headers.add('Access-Control-Allow-Credentials', 'true')
     return response
 
 #Todas nuestras funciones que tenemos disponibles dentro de nuestro backend de cada componente.
