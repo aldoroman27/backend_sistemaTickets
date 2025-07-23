@@ -10,4 +10,4 @@ class TicketSchema(Schema):
     equipo = fields.String(required=True)
     descripcion = fields.String(required=True, validate=validate.Length(min=5))
     fecha = fields.Date(required=True)
-    estado = fields.String(load_default="pendiente")
+    estado = fields.String(required=True)
