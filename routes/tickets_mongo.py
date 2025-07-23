@@ -20,28 +20,6 @@ client = MongoClient(os.getenv("MONGO_URI"))#Llamamos nuestra key para la conn
 db = client['pruebas_mido']#Seleccionamos el nombre de la db
 coleccion_tickets = db['tickets']#Seleccionamos el nombre de la colección con la que vamos a trabajar
 
-#Definimos una función para validar campos
-def validar_tickets(data):
-    errores = [] #Creamos una lista para los posibles errores que se presenten durante la ejecución
-
-    #Declaramos otra lista de los campos que son requeridos para poder llenar el ticket
-    campos_requeridos = [
-        'idEmpleado', 'nombreCompleto', 'correoElectronico',
-        'departamento', 'equipo', 'descripcion', 'fecha'
-    ]
-    #Hacemos un recorrido dentro de los campos recorridos, si algo es faltante entonces lo mandamos a la lista de errores con el nombre del campo faltante
-    for campo in campos_requeridos:
-        if not data.get(campo):
-            errores.append(f"Campo '{campo}' es obligatorio.")
-    #En caso de que no se presente un correo con información, con @ o con .com, .mx, etc, se presentará entonces el mensaje de correo invalido
-    if data.get('correoElectronico') and not re.match(r"[^@]+@[^@]+\.[^@]+",data['correoElectronico']):
-        errores.append("Correo electronico ínvalido, asegurese que contenga @ y dominio (.com, .mx, etc).")
-    #En caso que la longitud de la descripción sea menor a 5 entonces presentamos error
-    if len(data.get('descripcion', '')) < 5:
-        errores.append("La descripción debe de contener mínimo 5 caracteres.")
-    #Finalmente retornamos la lista de los errores que se presentaron durante la ejecución.
-    return errores
-
 #Declaramos una función para poder obtener el id de cada ticket registrado
 def get_next_ticket_id():
     counter = db.counters.find_one_and_update( #Este es el proceso de actualizar el id cada vez que se registre uno
@@ -63,6 +41,7 @@ def crear_ticket():
         data = request.json #Recopilamos la información que necesitaremos en formato JSON
         print(data)
         ticket_validado = ticket_schema.load(data)
+        print("Ticket validado: ", ticket_validado)
 
         nuevo_id = get_next_ticket_id()
         ticket_validado ['idTicket'] = nuevo_id
