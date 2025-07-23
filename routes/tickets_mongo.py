@@ -69,7 +69,7 @@ def crear_ticket():
 def obtener_tickets():
     try:
         #Hacemos una consulta y además un filtrado por estado para mostrar únicamente los que tienen estado pendiente
-        tickets_cursor = coleccion_tickets.find({"estado":"pendiente"})
+        tickets_cursor = coleccion_tickets.find({"estado":"pendiente" or "Pendiente"})
         tickets = []#Creamos una lista de tickets para almacenarlos y al final retornarlos en formato JSON
 
         #Hacemos un ciclo for para recorrer cada dato que nos retorne nuestro cursor
@@ -141,7 +141,7 @@ def eliminarTicket(id_ticket):
 def ticketsCompletados():
     try:
         #Hacemos una consulta y además un filtrado por estado para mostrar únicamente los que tienen estado completado
-        tickets_cursor = coleccion_tickets.find({"estado":"completado"})
+        tickets_cursor = coleccion_tickets.find({"estado":"completado" or "Completado"})
         tickets = []#Creamos una lista de tickets para almacenarlos y al final retornarlos en formato JSON
 
         #Hacemos un ciclo for para recorrer cada dato que nos retorne nuestro cursor
