@@ -14,6 +14,7 @@ from routes.users.buscarUsuario import buscarUsuarios_bp
 from routes.users.eliminarUsuarios import eliminarUsuarios_bp
 from routes.users.modificarUsuarios import modificarUsuarios_bp
 app = Flask(__name__)
+
 #Definimos las rutas a las que se va a comunicar nuestro backend, podemos incluir la local para pruebas locales y producción.
 CORS(app, supports_credentials=True, resources={r"/*": {"origins": [
     "http://localhost:5173",
