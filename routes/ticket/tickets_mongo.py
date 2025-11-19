@@ -34,7 +34,7 @@ def get_next_ticket_id():
     else:#En caso de poder hacerlo entonces
         raise Exception("No se pudo obtener el id del ticket.")#Mostramos entonces el mensaje de error que no se pudo recuperar el id del ticekt
 
-
+""""
 def enviar_correo_background(mensaje_correo, nuevo_id):
     try:
         msg = MIMEText(mensaje_correo)
@@ -48,7 +48,7 @@ def enviar_correo_background(mensaje_correo, nuevo_id):
             server.send_message(msg)
     except Exception as e:
         return print("Error enviando correo en background:")
-
+"""
 
 #Esta es nuestra ruta para poder agregar tickets
 @tickets_mongo_bp.route('/tickets_agregar', methods=['POST'])
@@ -65,18 +65,6 @@ def crear_ticket():
         ticket_validado ['idTicket'] = nuevo_id
 
         coleccion_tickets.insert_one(ticket_validado)
-        mensaje_correo = f"""
-                Se ha generado un nuevo ticket.
-                ID del Ticket: {nuevo_id}
-                ID empleado: {ticket_validado.get('idEmpleado','Sin ID')}
-                Nombre del Empleado: {ticket_validado.get('nombreCompleto', 'No especificado')}
-                Departamento: {ticket_validado.get('departamento','No especificado')}
-                Fecha: {ticket_validado['fecha']}
-                Descripción:
-                {ticket_validado.get('descripcion', 'Sin descripción')}
-        """
-        print(mensaje_correo)
-        enviar_correo_background(mensaje_correo, nuevo_id)
         #Finalmente retornamos en json un mensaje de éxito
         return jsonify({
             'message': 'Ticket insertado correctamente', #Mensaje de éxito
