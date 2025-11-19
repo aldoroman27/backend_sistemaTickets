@@ -1,5 +1,5 @@
 #Importamos las librerias necesarias
-from flask import Blueprint, request, jsonify #Flask para los endpoints y peticiones
+from flask import Blueprint, request, jsonify, current_app #Flask para los endpoints y peticiones
 from pymongo import MongoClient# pymongo para la conexión con la base de datos en mongo
 from marshmallow import ValidationError #Importamos ValidationError para mostrar excepciones.
 import re #No recuerdo que hacía re
@@ -9,6 +9,7 @@ import os #Importamos os para poder obtener las claves de nuestro .env
 from schemas.validarticketSchema import TicketSchema
 from email.mime.text import MIMEText
 import smtplib
+import threading
 #Creamos una instancia de nuestra clase TicketSchema.
 ticket_schema = TicketSchema()
 
@@ -34,6 +35,23 @@ def get_next_ticket_id():
         raise Exception("No se pudo obtener el id del ticket.")#Mostramos entonces el mensaje de error que no se pudo recuperar el id del ticekt
 
 
+def enviar_correo_background(mensaje_correo, nuevo_id):
+    with current_app.app_context():
+        try:
+            msg = MIMEText(mensaje_correo)
+            msg['Subject'] = f"Nuevo Ticket Generado, ID #{nuevo_id}"
+            msg['From'] = os.getenv("MAIL_USER")
+            msg['To'] = os.getenv("MAIL_USER")
+
+            with smtplib.SMTP("smtp.gmail.com", 587) as server:
+                server.starttls()
+                server.login(os.getenv("MAIL_USER"), os.getenv("MAIL_PASS"))
+                server.send_message(msg)
+        except Exception as e:
+            import traceback
+            print("Error enviando correo en background:", traceback.format_exc())
+
+
 #Esta es nuestra ruta para poder agregar tickets
 @tickets_mongo_bp.route('/tickets_agregar', methods=['POST'])
 def crear_ticket():
@@ -49,8 +67,7 @@ def crear_ticket():
         ticket_validado ['idTicket'] = nuevo_id
 
         coleccion_tickets.insert_one(ticket_validado)
-        try:
-            mensaje_correo = f"""
+        mensaje_correo = f"""
                 Se ha generado un nuevo ticket.
                 ID del Ticket: {nuevo_id}
                 Usuario: {ticket_validado.get('usuario', 'No especificado')}
@@ -58,18 +75,9 @@ def crear_ticket():
                 Fecha: {ticket_validado['fecha']}
                 Descripción:
                 {ticket_validado.get('descripcion', 'Sin descripción')}
-            """
-            msg = MIMEText(mensaje_correo)
-            msg['Subject'] = f"Nuevo Ticket Generado, ID del ticket: #{nuevo_id}"
-            msg['FROM'] = os.getenv("MAIL_USER")
-            msg['TO'] = os.getenv("MAIL_USER")
-
-            with smtplib.SMTP("smtp.gmail.com", 587) as server:
-                server.starttls()
-                server.login(os.getenv("MAIL_USER"),os.getenv("MAIL_PASS"))
-                server.send_message(msg)
-        except Exception as e:
-            print("Error al validar el correo!", e)
+        """
+        hilo = threading.Thread(target=enviar_correo_background, args=(mensaje_correo, nuevo_id))
+        hilo.start()
         #Finalmente retornamos en json un mensaje de éxito
         return jsonify({
             'message': 'Ticket insertado correctamente', #Mensaje de éxito
@@ -77,10 +85,8 @@ def crear_ticket():
         }), 201
     #En caso que durante el proceso se presente un error entonces
     except ValidationError as err:
-        print("ERROR DE VALIDACIÓN EN TICKET", err.messages)
         return jsonify({'message':err.messages}),400
     except Exception as e:
-        print("Error al insertar ticket:", str(e))#Imprimimos en consola el error
         return jsonify({'error': str(e)}), 500 #Mostramos el error en formato JSON
 
 #Esta ruta solo mostrará los tickets pendientes.
