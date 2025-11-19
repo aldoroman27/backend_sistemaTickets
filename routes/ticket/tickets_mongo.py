@@ -36,20 +36,18 @@ def get_next_ticket_id():
 
 
 def enviar_correo_background(mensaje_correo, nuevo_id):
-    with current_app.app_context():
-        try:
-            msg = MIMEText(mensaje_correo)
-            msg['Subject'] = f"Nuevo Ticket Generado, ID #{nuevo_id}"
-            msg['From'] = os.getenv("MAIL_USER")
-            msg['To'] = os.getenv("MAIL_USER")
-
-            with smtplib.SMTP("smtp.gmail.com", 587) as server:
-                server.starttls()
-                server.login(os.getenv("MAIL_USER"), os.getenv("MAIL_PASS"))
-                server.send_message(msg)
-        except Exception as e:
-            import traceback
-            print("Error enviando correo en background:", traceback.format_exc())
+    try:
+        msg = MIMEText(mensaje_correo)
+        msg['Subject'] = f"Nuevo Ticket Generado, ID #{nuevo_id}"
+        msg['From'] = os.getenv("MAIL_USER")
+        msg['To'] = os.getenv("MAIL_USER")
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.starttls()
+            server.login(os.getenv("MAIL_USER"), os.getenv("MAIL_PASS"))
+            print("Hice el login")
+            server.send_message(msg)
+    except Exception as e:
+        return print("Error enviando correo en background:")
 
 
 #Esta es nuestra ruta para poder agregar tickets
@@ -70,14 +68,15 @@ def crear_ticket():
         mensaje_correo = f"""
                 Se ha generado un nuevo ticket.
                 ID del Ticket: {nuevo_id}
-                Usuario: {ticket_validado.get('usuario', 'No especificado')}
-                Asunto: {ticket_validado.get('asunto', 'Sin asunto')}
+                ID empleado: {ticket_validado.get('idEmpleado','Sin ID')}
+                Nombre del Empleado: {ticket_validado.get('nombreCompleto', 'No especificado')}
+                Departamento: {ticket_validado.get('departamento','No especificado')}
                 Fecha: {ticket_validado['fecha']}
                 Descripción:
                 {ticket_validado.get('descripcion', 'Sin descripción')}
         """
-        hilo = threading.Thread(target=enviar_correo_background, args=(mensaje_correo, nuevo_id))
-        hilo.start()
+        print(mensaje_correo)
+        enviar_correo_background(mensaje_correo, nuevo_id)
         #Finalmente retornamos en json un mensaje de éxito
         return jsonify({
             'message': 'Ticket insertado correctamente', #Mensaje de éxito
