@@ -7,7 +7,8 @@ from datetime import datetime, date #Importamos datetime para obtener la fecha a
 import os #Importamos os para poder obtener las claves de nuestro .env
 #Importamos nuestro schema para validar los tickets
 from schemas.validarticketSchema import TicketSchema
-
+from email.mime.text import MIMEText
+import smtplib
 #Creamos una instancia de nuestra clase TicketSchema.
 ticket_schema = TicketSchema()
 
@@ -48,6 +49,27 @@ def crear_ticket():
         ticket_validado ['idTicket'] = nuevo_id
 
         coleccion_tickets.insert_one(ticket_validado)
+        try:
+            mensaje_correo = f"""
+                Se ha generado un nuevo ticket.
+                ID del Ticket: {nuevo_id}
+                Usuario: {ticket_validado.get('usuario', 'No especificado')}
+                Asunto: {ticket_validado.get('asunto', 'Sin asunto')}
+                Fecha: {ticket_validado['fecha']}
+                Descripción:
+                {ticket_validado.get('descripcion', 'Sin descripción')}
+            """
+            msg = MIMEText(mensaje_correo)
+            msg['Subject'] = f"Nuevo Ticket Generado, ID del ticket: #{nuevo_id}"
+            msg['FROM'] = os.getenv("MAIL_USER")
+            msg['TO'] = os.getenv("MAIL_USER")
+
+            with smtplib.SMTP("smtp.gmail.com", 587) as server:
+                server.starttls()
+                server.login(os.getenv("MAIL_USER"),os.getenv("MAIL_PASS"))
+                server.send_message(msg)
+        except Exception as e:
+            print("Error al validar el correo!", e)
         #Finalmente retornamos en json un mensaje de éxito
         return jsonify({
             'message': 'Ticket insertado correctamente', #Mensaje de éxito
